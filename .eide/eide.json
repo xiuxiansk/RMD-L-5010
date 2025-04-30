@@ -1,0 +1,207 @@
+{
+  "name": "G431_MF5010",
+  "type": "ARM",
+  "dependenceList": [],
+  "srcDirs": [
+    "Core",
+    "Middlewares",
+    "Drivers",
+    "App",
+    "Bsp",
+    "Modules"
+  ],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [],
+    "folders": []
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "923a66e4162f778bf90fb6da4932d2d1"
+  },
+  "targets": {
+    "Debug": {
+      "excludeList": [],
+      "toolchain": "GCC",
+      "compileConfig": {
+        "cpuType": "Cortex-M4",
+        "floatingPointHardware": "single",
+        "scatterFilePath": "",
+        "useCustomScatterFile": true,
+        "storageLayout": {
+          "RAM": [],
+          "ROM": []
+        },
+        "options": "null"
+      },
+      "uploader": "JLink",
+      "uploadConfig": {
+        "bin": "",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "ST",
+          "cpuName": "STM32G431CB"
+        },
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": ""
+      },
+      "uploadConfigMap": {},
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "Core/Inc",
+          "Drivers/STM32G4xx_HAL_Driver/Inc",
+          "Drivers/STM32G4xx_HAL_Driver/Inc/Legacy",
+          "Drivers/CMSIS/Device/ST/STM32G4xx/Include",
+          "Drivers/CMSIS/Include",
+          "Bsp/Inc",
+          "App/Inc",
+          "Bsp/adc",
+          "Bsp/can",
+          "Bsp/dwt",
+          "Bsp/flash",
+          "Modules/algorithm",
+          "Modules/can_comm",
+          "Modules/controller",
+          "Modules/daemon",
+          "Modules/encoder",
+          "Modules/flash",
+          "Modules/led",
+          "Modules/motor",
+          "Modules",
+          "Middlewares/ST/ARM/DSP/Inc",
+          "Bsp",
+          "App",
+          "Bsp/log",
+          "Bsp/usart",
+          "Middlewares/Third_Party/FreeRTOS/Source/include",
+          "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
+          "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+          "App/motor_task",
+          "App/cmd_task",
+          "Modules/vofa",
+          "Modules/algorithm/crc",
+          "Bsp/opamp",
+          "Middlewares/ST/ARM/DSP/Lib",
+          "Modules/queue"
+        ],
+        "libList": [
+          "Middlewares/ST/ARM/DSP/Lib"
+        ],
+        "defineList": [
+          "DEBUG",
+          "USE_HAL_DRIVER",
+          "STM32G431xx"
+        ]
+      },
+      "builderOptions": {
+        "GCC": {
+          "version": 5,
+          "beforeBuildTasks": [],
+          "afterBuildTasks": [],
+          "global": {
+            "$float-abi-type": "hard",
+            "output-debug-info": "enable"
+          },
+          "c/cpp-compiler": {
+            "language-c": "c11",
+            "language-cpp": "c++11",
+            "optimization": "level-debug",
+            "warnings": "all-warnings",
+            "one-elf-section-per-function": true,
+            "one-elf-section-per-data": true
+          },
+          "asm-compiler": {
+            "ASM_FLAGS": "-DDEBUG"
+          },
+          "linker": {
+            "output-format": "elf",
+            "remove-unused-input-sections": true,
+            "LD_FLAGS": "-TSTM32G431CBUX_FLASH.ld",
+            "LIB_FLAGS": "-larm_cortexM4lf_math",
+            "$toolName": "auto"
+          }
+        }
+      }
+    },
+    "Release": {
+      "excludeList": [],
+      "toolchain": "GCC",
+      "compileConfig": {
+        "cpuType": "Cortex-M3",
+        "floatingPointHardware": "none",
+        "scatterFilePath": "",
+        "useCustomScatterFile": true,
+        "storageLayout": {
+          "RAM": [],
+          "ROM": []
+        },
+        "options": "null"
+      },
+      "uploader": "JLink",
+      "uploadConfig": {
+        "bin": "",
+        "baseAddr": "",
+        "cpuInfo": {
+          "vendor": "ST",
+          "cpuName": "STM32G431CB"
+        },
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": ""
+      },
+      "uploadConfigMap": {},
+      "builderOptions": {
+        "GCC": {
+          "version": 5,
+          "beforeBuildTasks": [],
+          "afterBuildTasks": [],
+          "global": {
+            "$float-abi-type": "softfp",
+            "output-debug-info": "enable",
+            "misc-control": []
+          },
+          "c/cpp-compiler": {
+            "language-c": "c11",
+            "language-cpp": "c++11",
+            "optimization": "level-debug",
+            "warnings": "all-warnings",
+            "one-elf-section-per-function": true,
+            "one-elf-section-per-data": true,
+            "C_FLAGS": "",
+            "CXX_FLAGS": ""
+          },
+          "asm-compiler": {
+            "ASM_FLAGS": ""
+          },
+          "linker": {
+            "output-format": "elf",
+            "remove-unused-input-sections": true,
+            "LD_FLAGS": "",
+            "LIB_FLAGS": "-l:libarm_cortexM4lf_math.a"
+          }
+        }
+      },
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "Core/Inc",
+          "Drivers/STM32G4xx_HAL_Driver/Inc",
+          "Drivers/STM32G4xx_HAL_Driver/Inc/Legacy",
+          "Drivers/CMSIS/Device/ST/STM32G4xx/Include",
+          "Drivers/CMSIS/Include",
+          "Middlewares/ST/ARM/DSP/Inc"
+        ],
+        "defineList": [
+          "USE_HAL_DRIVER",
+          "STM32G431xx"
+        ],
+        "libList": []
+      }
+    }
+  },
+  "version": "3.5"
+}

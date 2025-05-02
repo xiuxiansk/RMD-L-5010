@@ -11,7 +11,6 @@ ENCODER_DATA encoder_data = {
     .pole_pairs           = 0,     // 设置极对数为电机参数
     .encoder_offset       = 0,     // 设置电角度偏移量
     .dir                  = 0,     // 设置编码器旋转方向为顺时针
-    .raw                  = 0,     // 初始化原始计数值为0
     .cnt                  = 0,     // 计数器
     .theta_acc            = 0.01f, // 设置角度累加步长为0.01弧度
     .count_in_cpr_        = 0,     // 原始值（整数型）
@@ -105,23 +104,11 @@ void GetMotor_Angle(ENCODER_DATA *encoder)
     static const float snap_threshold = 0.5f * CURRENT_MEASURE_PERIOD * pll_ki_;
     if (mt6701_read_raw(encoder)) {
         if (encoder->dir == CW) {
-            encoder->raw = encoder->angle;
+            encoder->cnt = encoder->angle;
         } else {
-            encoder->raw = (ENCODER_CPR - encoder->angle);
+            encoder->cnt = (ENCODER_CPR - encoder->angle);
         }
     }
-
-    // offset compensation
-    int off_1      = encoder->offset_lut[encoder->raw >> 7];
-    int off_2      = encoder->offset_lut[((encoder->raw >> 7) + 1) % 128];
-    int off_interp = off_1 + ((off_2 - off_1) * (encoder->raw - ((encoder->raw >> 7) << 7)) >> 7); // Interpolate between lookup table entries
-    int cnt        = encoder->raw - off_interp;                                                    // Correct for nonlinearity with lookup table from calibration
-    if (cnt > ENCODER_CPR) {
-        cnt -= ENCODER_CPR;
-    } else if (cnt < 0) {
-        cnt += ENCODER_CPR;
-    }
-    encoder->cnt = cnt;
 
     int delta_enc = encoder->cnt - encoder->count_in_cpr_;
     delta_enc     = mod(delta_enc, ENCODER_CPR);

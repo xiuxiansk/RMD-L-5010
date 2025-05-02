@@ -27,18 +27,16 @@ typedef enum {
 
 typedef struct
 {
-    uint32_t angle;
+    uint32_t angle; // 磁编码器的原始计数值
     uint8_t mag_status;
     uint8_t rx_err_count;
     uint8_t check_err_count;
 
-    int32_t offset_lut[128]; // 用于磁编码器线性化的查找表
-    int32_t count;           // 磁编码器的当前计数值（在一个完整编码器周期内的计数值）
+    int32_t count; // 磁编码器的当前计数值（在一个完整编码器周期内的计数值）
 
     // 角度信息
     uint8_t pole_pairs; // 电机极对数，用于计算电角度
     int cnt;
-    int raw; // 磁编码器的原始计数值
     int dir; // 磁编码器的旋转方向，+1 表示顺时针，-1 表示逆时针
     int pos_abs_;
     int count_in_cpr_;

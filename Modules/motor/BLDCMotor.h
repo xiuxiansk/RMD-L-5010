@@ -20,7 +20,7 @@
 #define MOTOR_TRAJ_VEL               20.0f                          // 梯形轨迹控制模式下最大转速 [turn/s] (设定值应当小于或等于 MOTOR_VEL_LIMIT)
 #define MOTOR_TRAJ_ACCEL             5.0f                           // 梯形轨迹控制模式下加速度 [(turn/s)/s]
 #define MOTOR_TRAJ_DECEL             5.0f                           // 梯形轨迹控制模式下减速度 [(turn/s)/s]
-#define MOTOR_VEL_LIMIT              50.0f                          // 转速限制值 [rad/s] 一般设置为电机最大允许转速
+#define MOTOR_VEL_LIMIT              40.0f                          // 转速限制值 [rad/s] 一般设置为电机最大允许转速
 #define MOTOR_VOLTAGE_LIMIT          16.8f                          // 电机电压限制值 [V]
 #define MOTOR_FDB_CURRENT_LIMIT      6.0f                           // 反馈电流最大值
 #define MOTOR_REF_CURRENT_LIMIT      5.0f                           // 控制电流最大值,实测11.1V给该值可稳定，但11.1V只有1.3A,12V可达到1.5A对应0.15Nm

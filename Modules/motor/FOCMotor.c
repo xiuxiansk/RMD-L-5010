@@ -4,6 +4,7 @@
 #include "bsp_dwt.h"
 #include "main.h"
 #include "trapTraj.h"
+#include <stdlib.h>
 
 MOTOR_DATA motor_data = {
     .components = {
@@ -380,22 +381,6 @@ static void RSLSCalibration(MOTOR_DATA *motor)
             break;
 
         case CS_ENCODER_CW_LOOP: // 校准编码器（正转）
-            // Test voltage along phase A
-            //        FOC_voltage(motor->components.foc, 0, voltage, M_3PI_2);
-
-            //        if (loop_count >= num_R_cycles/1.5)
-            //        {
-            //			motor->components.encoder->encoder_offset = motor->components.encoder->cnt;
-            //			FOC_voltage(motor->components.foc, 0, 0, M_3PI_2);
-            //
-            //			free(p_error_arr);
-            //            p_error_arr = NULL;
-            //            motor->components.encoder->calib_valid = true;
-            //            motor->state.Cs_State = CS_STATE_IDLE;
-            //            motor->state.Sub_State = SUB_STATE_IDLE;      // 改变子状态
-            //            motor->state.State_Mode = STATE_MODE_RUNNING; // 改变主状态
-            //        }
-
             if (sample_count < (motor->components.encoder->pole_pairs * SAMPLES_PER_PPAIR)) {
                 if (time > next_sample_time) {
                     next_sample_time += M_2PI / ((float)SAMPLES_PER_PPAIR * calib_phase_vel);
@@ -442,7 +427,7 @@ static void RSLSCalibration(MOTOR_DATA *motor)
             FOC_voltage(motor->components.foc, voltage, 0, phase_set);
             break;
 
-        case CS_ENCODER_END: // 校准编码器完成
+        case CS_ENCODER_END: // 校准编码器完成,输出校准结果
         {
             // Calculate average offset
             int64_t moving_avg = 0;
@@ -450,61 +435,25 @@ static void RSLSCalibration(MOTOR_DATA *motor)
                 moving_avg += p_error_arr[i];
             }
             motor->components.encoder->encoder_offset = moving_avg / (motor->components.encoder->pole_pairs * SAMPLES_PER_PPAIR);
+            free(p_error_arr);
+            p_error_arr = NULL;
 
-            // FIR and map measurements to lut
-            int window     = SAMPLES_PER_PPAIR;
-            int lut_offset = p_error_arr[0] * OFFSET_LUT_NUM / ENCODER_CPR;
-            for (int i = 0; i < OFFSET_LUT_NUM; i++) {
-                moving_avg = 0;
-                for (int j = (-window) / 2; j < (window) / 2; j++) {
-                    int index = i * motor->components.encoder->pole_pairs * SAMPLES_PER_PPAIR / OFFSET_LUT_NUM + j;
-                    if (index < 0) {
-                        index += (SAMPLES_PER_PPAIR * motor->components.encoder->pole_pairs);
-                    } else if (index > (SAMPLES_PER_PPAIR * motor->components.encoder->pole_pairs - 1)) {
-                        index -= (SAMPLES_PER_PPAIR * motor->components.encoder->pole_pairs);
-                    }
-                    moving_avg += p_error_arr[index];
-                }
-                moving_avg    = moving_avg / window;
-                int lut_index = lut_offset + i;
-                if (lut_index > (OFFSET_LUT_NUM - 1)) {
-                    lut_index -= OFFSET_LUT_NUM;
-                }
-                motor->components.encoder->offset_lut[lut_index] = moving_avg - motor->components.encoder->encoder_offset;
-            }
-
-            loop_count            = 0;
-            sample_count          = 0;
-            next_sample_time      = 0;
-            motor->state.Cs_State = CS_REPORT_OFFSET_LUT;
+            motor->state.Cs_State                  = CS_STATE_IDLE;
+            motor->state.Sub_State                 = SUB_STATE_IDLE;
+            motor->state.State_Mode                = STATE_MODE_RUNNING;
+            motor->components.encoder->calib_valid = true;
+            PID_clear(&motor->IqPID);
+            PID_clear(&motor->IdPID);
+            PID_clear(&motor->VelPID);
+            PID_clear(&motor->PosPID);
+            /*电阻电感校准不一定正确，影响到电流环参数，暂时定为统一值*/
+            motor->parameters.Rs = MOTOR_RS;
+            motor->parameters.Ls = MOTOR_LS;
+            /*校准数据存入flash*/
+            Flash_SaveMotorParam((uint32_t)(motor_data.components.encoder->pole_pairs),
+                                 motor_data.components.encoder->encoder_offset,
+                                 motor_data.components.encoder->dir);
         } break;
-
-        case CS_REPORT_OFFSET_LUT: // 输出校准结果
-            if (sample_count < OFFSET_LUT_NUM) {
-                if (time > next_sample_time) {
-                    next_sample_time += 0.001f;
-                    sample_count++;
-                }
-            } else {
-                free(p_error_arr);
-                p_error_arr                            = NULL;
-                motor->state.Cs_State                  = CS_STATE_IDLE;
-                motor->state.Sub_State                 = SUB_STATE_IDLE;
-                motor->state.State_Mode                = STATE_MODE_RUNNING;
-                motor->components.encoder->calib_valid = true;
-                PID_clear(&motor->IqPID);
-                PID_clear(&motor->IdPID);
-                PID_clear(&motor->VelPID);
-                PID_clear(&motor->PosPID);
-                /*电阻电感校准不一定正确，影响到电流环参数，暂时定为统一值*/
-                motor->parameters.Rs = MOTOR_RS;
-                motor->parameters.Ls = MOTOR_LS;
-                /*校准数据存入flash*/
-                Flash_SaveMotorParam((uint32_t)(motor_data.components.encoder->pole_pairs),
-                                     motor_data.components.encoder->encoder_offset,
-                                     motor_data.components.encoder->dir);
-            }
-            break;
 
         default:
             break;

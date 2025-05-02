@@ -5,7 +5,7 @@
 **********************************************************************
 
 File          : C:/Users/29987/Desktop/ROS2shiyan/RMD-L-5010(4310)/RMD-L-5010/ozone.jdebug
-Created       : 1 May 2025 00:08
+Created       : 2 May 2025 03:06
 Ozone Version : V3.38c
 */
 
@@ -33,7 +33,7 @@ void OnProjectLoad (void) {
   //
   // User settings
   //
-  File.Open ("C:/Users/29987/Desktop/ROS2shiyan/RMD-L-5010(4310)/G431_MF5010/build/Debug/G431_MF5010.elf");
+  File.Open ("$(ProjectDir)/build/Debug/G431_MF5010.elf");
 }
 
 /*********************************************************************

@@ -70,7 +70,6 @@ typedef enum {
     CS_ENCODER_CW_LOOP,
     CS_ENCODER_CCW_LOOP,
     CS_ENCODER_END,
-    CS_REPORT_OFFSET_LUT,
 } CS_STATE;
 
 /**
